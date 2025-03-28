@@ -45,6 +45,10 @@ const gunMouseup = () => {
     checkLevelPassed();
 }
 
+document.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+    return false;
+})
 </script>
 
 <template>
@@ -53,8 +57,12 @@ const gunMouseup = () => {
     <div id="throwBall" :style="`height:${gameState.global.boardHeight}px; user-select: none;`">
         <span>Level: {{ gameState.levelProps.index }}</span>
         <div class="lives">
-            <svg width="62" height="61" viewBox="0 0 62 61" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M4.6 3C6.20031 3 8.15491 3 10.2 3M10.2 3C14.6979 3 19.6336 3 22.2 3L29.4 10.2537V19.1194H31.8V10.2537L39 3H51.8L59 10.2537V28.791L31 57L3 28.791V10.2537L10.2 3Z" stroke="black" stroke-width="5"/>
+            <svg width="115" height="109" viewBox="0 0 115 109" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M57.5 20.5L43 6H20.5L6 20.5V49L57.5 100.5L109 49V20.5L94.5 6H72L57.5 20.5Z" stroke="black" stroke-width="11"/>
+                <rect width="9" height="9" transform="matrix(1 0 0 -1 21 54)" fill="black"/>
+                <rect width="9" height="9" transform="matrix(1 0 0 -1 30 63)" fill="black"/>
+                <rect width="9" height="9" transform="matrix(1 0 0 -1 39 72)" fill="black"/>
+                <rect width="9" height="9" transform="matrix(1 0 0 -1 48 81)" fill="black"/>
             </svg>
             {{ gameState.player.lives }}
         </div>
@@ -179,6 +187,7 @@ const gunMouseup = () => {
 
     .lives svg {
         width: 2rem;
+        height: auto;
     }
 
     .button {
