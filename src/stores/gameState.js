@@ -23,7 +23,8 @@ export const useGameState = defineStore('game-state', {
             },
             player: {
                 name: "Player 1",
-                lives: 10
+                lives: 10,
+                heighScore: localStorage.getItem('throwBallHieghtScore') ? localStorage.getItem('throwBallHieghtScore') : null,
             },
             ball: {
                 size: 20,
@@ -51,12 +52,12 @@ export const useGameState = defineStore('game-state', {
             this.ball.position.y = 0;
             const startTime = Date.now();
 
+            this.gun.state = 'loading';
+
             const interval = setInterval(() => {
                 if (this.gun.power >= 100) return
                 this.gun.power += 1;
-            }, this.levelProps.timeToPowerUp * 1000 / 100);
-
-            this.gun.state = 'loading';
+            }, this.levelProps.timeToPowerUp * 10);
 
             return {startTime, interval};
         },
@@ -67,6 +68,7 @@ export const useGameState = defineStore('game-state', {
             this.ball.position.y = this.gun.power;
             this.gun.power = 0;
             this.gun.state = 'shoot';
+            setTimeout(() => this.gun.state = 'off', 50);
         },
         reset() {
             this.$reset();
