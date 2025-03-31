@@ -46,12 +46,31 @@ document.addEventListener('contextmenu', (e) => {
     e.preventDefault();
     return false;
 })
+
+let pressed = false;
+document.addEventListener('keydown', (e) => {
+    if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
+        e.preventDefault();
+        if (pressed) return
+        pressed = true
+        gunMousedown();
+    }
+    if (e.code == 'Enter' && gameState.levelProps.levelPassed) gameState.nextLevel();
+})
+document.addEventListener('keyup', (e) => {
+    if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
+        e.preventDefault();
+        pressed = false;
+        gunMouseup();
+    }
+})
+
 </script>
 
 <template>
     <!-- <h2 class="page-title">Game</h2> -->
 
-    <div id="throwBall" :style="`height:${gameState.global.boardHeight}px; user-select: none;`">
+    <div id="throwBall" :style="`height:${gameState.global.boardHeight}px; user-select: none;`" tabindex="-1">
         <span v-if="gameState.player.heighScore" class="heigh-score">Heigh Score: {{ gameState.player.heighScore }}</span> <br>
         <span>Level: {{ gameState.levelProps.index }}</span>
         <div class="lives">
@@ -105,8 +124,8 @@ document.addEventListener('contextmenu', (e) => {
             </svg>
             <div class="gun__loading-bar" :style="`background-image: linear-gradient(to top, black 0% ${gameState.gun.power}%, transparent 0%);`"></div>
         </div>
-        <button @click="gameState.reset" class="reset-btn button">Reset</button>
-        <button v-if="gameState.levelProps.levelPassed" @click="gameState.nextLevel" class="next-level-btn button">Next</button>
+        <button @click="gameState.reset" class="reset-btn button" tabindex="-1">Reset</button>
+        <button v-if="gameState.levelProps.levelPassed" @click="gameState.nextLevel" class="next-level-btn button" tabindex="-1" >Next</button>
 
         <div v-if="gameState.player.lives < 1" class="game-over">
             <p>GAME OVER</p>
@@ -249,6 +268,7 @@ document.addEventListener('contextmenu', (e) => {
         position: absolute;
         width: 100%;
         top: 30%;
+        left: 0;
         background: black;
         color: white;
         display: flex;
