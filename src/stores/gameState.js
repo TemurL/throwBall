@@ -13,6 +13,7 @@ export const useGameState = defineStore('game-state', {
         return {
             global: {
                 boardHeight: innerHeight * 0.75,
+                initialized: false
             },
             levelProps: {
                 index: 1,

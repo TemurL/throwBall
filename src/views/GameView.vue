@@ -40,31 +40,45 @@ const gunMouseup = () => {
         gameState.player.heighScore = gameState.levelProps.index;
         localStorage.setItem('throwBallHieghtScore', gameState.levelProps.index);
     }
+    if (gameState.levelProps.levelPassed) {
+        setTimeout(nextLvlClick, 500);
+    }
+}
+const nextLvlClick = () => {
+    document.querySelector('.next-level-btn').classList.add('fadeout');
+    setTimeout(gameState.nextLevel, 500);
+}
+let pressed = false;
+
+
+const init = () => {
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+        return false;
+    })
+    document.addEventListener('keydown', (e) => {
+        if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
+            e.preventDefault();
+            if (pressed) return
+            pressed = true;
+            document.querySelector('.reset-btn').blur();
+            gunMousedown();
+        }
+        if (e.code == 'Enter' && gameState.levelProps.levelPassed) gameState.nextLevel();
+    })
+    document.addEventListener('keyup', (e) => {
+        if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
+            e.preventDefault();
+            pressed = false;
+            gunMouseup();
+        }
+    })
 }
 
-document.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-    return false;
-})
-
-let pressed = false;
-document.addEventListener('keydown', (e) => {
-    if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
-        e.preventDefault();
-        if (pressed) return
-        pressed = true;
-        document.querySelector('.reset-btn').blur();
-        gunMousedown();
-    }
-    if (e.code == 'Enter' && gameState.levelProps.levelPassed) gameState.nextLevel();
-})
-document.addEventListener('keyup', (e) => {
-    if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
-        e.preventDefault();
-        pressed = false;
-        gunMouseup();
-    }
-})
+if (!gameState.global.initialized) {
+    init();
+    gameState.global.initialized = true
+}
 
 </script>
 
@@ -126,7 +140,7 @@ document.addEventListener('keyup', (e) => {
             <div class="gun__loading-bar" :style="`background-image: linear-gradient(to top, black 0% ${gameState.gun.power}%, transparent 0%);`"></div>
         </div>
         <button @click="gameState.reset" class="reset-btn button" tabindex="-1">Reset</button>
-        <button v-if="gameState.levelProps.levelPassed" @click="gameState.nextLevel" class="next-level-btn button" tabindex="-1" >Next</button>
+        <button v-if="gameState.levelProps.levelPassed" @click="nextLvlClick" class="next-level-btn button" tabindex="-1" >Next</button>
 
         <div v-if="gameState.player.lives < 1" class="game-over">
             <p>GAME OVER</p>
@@ -262,8 +276,12 @@ document.addEventListener('keyup', (e) => {
         font-size: 3rem;
         padding: 20px 0;
         animation-name: fadeIn;
-        animation-duration: 1s;
+        animation-duration: .5s;
         animation-timing-function: linear;
+
+        &.fadeout {
+            animation-name: fadeOut;
+        }
     }
 
     .game-over {
@@ -278,7 +296,7 @@ document.addEventListener('keyup', (e) => {
         flex-direction: column;
         padding: 10px 0;
         animation-name: fadeIn;
-        animation-duration: 1s;
+        animation-duration: .5s;
         animation-timing-function: linear;
 
         p {
@@ -292,6 +310,14 @@ document.addEventListener('keyup', (e) => {
         }
         to {
             opacity: 1;
+        }
+    }
+    @keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
         }
     }
 </style>
