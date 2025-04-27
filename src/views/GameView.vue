@@ -52,7 +52,8 @@ document.addEventListener('keydown', (e) => {
     if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
         e.preventDefault();
         if (pressed) return
-        pressed = true
+        pressed = true;
+        document.querySelector('.reset-btn').blur();
         gunMousedown();
     }
     if (e.code == 'Enter' && gameState.levelProps.levelPassed) gameState.nextLevel();
