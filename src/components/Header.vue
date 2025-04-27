@@ -12,7 +12,7 @@ const clearPaths = computed(() => {
 <template>
   <header v-if="router.currentRoute.value.path != '/'">
     <div class="wrapper">
-      <RouterLink to="/" class="logo-title">Lamps</RouterLink>
+      <RouterLink to="/" class="logo-title">Throw ball</RouterLink>
       <nav>
         <RouterLink v-for="path in clearPaths" :to="path.path">{{ path.name }}</RouterLink>
       </nav>

@@ -140,6 +140,7 @@ document.addEventListener('keyup', (e) => {
     #throwBall {
         position: relative;
         background: #00000054;
+        border: 1px solid #515151a8;
         border-radius: 6px;
         box-shadow: 0 0 17px #00000042;
         overflow: hidden;

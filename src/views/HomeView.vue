@@ -8,8 +8,8 @@ import { RouterLink } from 'vue-router';
 <template>
   <main>
     <div>
-      <h1 class="main-title">Lamps</h1>
-      <RouterLink to="./about"><ButtonLight>Go</ButtonLight></RouterLink>
+      <h1 class="main-title">Throw ball</h1>
+      <RouterLink to="./game"><ButtonLight>Go</ButtonLight></RouterLink>
     </div>
   </main>
 </template>
