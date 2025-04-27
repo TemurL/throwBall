@@ -214,14 +214,14 @@ document.addEventListener('keyup', (e) => {
 
     #ball {
         --y: 0%;
-        --width: 20px;
+        --size: 20px;
         position: absolute;
-        width: var(--width);
+        width: var(--size);
         aspect-ratio: 1;
         background-color: black;
         border-radius: 100px;
-        bottom: calc(var(--y) - var(--width)/2);
-        left: calc(50% - var(--width)/2);
+        bottom: calc(var(--y) - var(--size)/2);
+        left: calc(50% - var(--size)/2);
         transition: bottom 0.4s;
     }
 

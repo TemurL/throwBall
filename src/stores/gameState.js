@@ -42,6 +42,7 @@ export const useGameState = defineStore('game-state', {
     actions: {
         nextLevel() {
             this.ball.position.y = 0;
+            this.ball.size*= 0.99;
             this.levelProps.index++;
             this.levelProps.targetHeight = generateRandomHeight();
             this.levelProps.timeToPowerUp *= 0.95;
