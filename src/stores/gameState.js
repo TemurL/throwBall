@@ -107,8 +107,10 @@ export const useGameState = defineStore('game-state', {
             this.global.muted = !this.global.muted
         },
         reset() {
+            const mute = this.global.muted;
             this.$reset();
             this.global.initialized = true;
+            this.global.muted = mute;
         }
     }
 })
