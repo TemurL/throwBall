@@ -9,10 +9,11 @@
 }
 
 html {
-  font-family: "Pixelify Sans", sans-serif;
+  font-family: "Jersey 10", sans-serif;
   font-optical-sizing: auto;
   background: var(--color-light);
   color: var(--color-dark);
+  font-size: 18px;
 }
 
 body {

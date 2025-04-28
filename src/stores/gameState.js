@@ -1,4 +1,8 @@
 import { defineStore } from "pinia";
+import shoot from'@public/shoot.mp3';
+import nextLvl from'@public/passedLvl.mp3';
+import gameOver from'@public/gameOver.mp3';
+import nextLvlBonus from'@public/nextLvlBonus.mp3';
 
 const generateRandomHeight = () => {
     let res;
@@ -13,7 +17,13 @@ export const useGameState = defineStore('game-state', {
         return {
             global: {
                 boardHeight: innerHeight * 0.75,
-                initialized: false
+                initialized: false,
+                sounds: {
+                    shoot: new Audio(shoot),
+                    nextLvl: new Audio(nextLvl),
+                    gameOver: new Audio(gameOver),
+                    nextLvlBonus: new Audio(nextLvlBonus),
+                }
             },
             levelProps: {
                 index: 1,
@@ -26,6 +36,7 @@ export const useGameState = defineStore('game-state', {
                 name: "Player 1",
                 lives: 10,
                 heighScore: localStorage.getItem('throwBallHieghtScore') ? localStorage.getItem('throwBallHieghtScore') : null,
+                scoredInARow: 0,
             },
             ball: {
                 size: 20,
@@ -43,7 +54,6 @@ export const useGameState = defineStore('game-state', {
     actions: {
         nextLevel() {
             this.ball.position.y = 0;
-            this.ball.size*= 0.99;
             this.levelProps.index++;
             this.levelProps.targetHeight = generateRandomHeight();
             this.levelProps.timeToPowerUp *= 0.95;
@@ -74,6 +84,7 @@ export const useGameState = defineStore('game-state', {
         },
         reset() {
             this.$reset();
+            this.global.initialized = true;
         }
     }
 })
