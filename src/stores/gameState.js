@@ -4,6 +4,20 @@ import nextLvl from'@/assets/passedLvl.mp3';
 import gameOver from'@/assets/gameOver.mp3';
 import nextLvlBonus from'@/assets/nextLvlBonus.mp3';
 
+const sounds = {
+    shoot,
+    nextLvl,
+    gameOver,
+    nextLvlBonus
+}
+
+const preloadSounds = () => {
+    for (let sound in sounds) {
+        console.log(sounds, sound);
+        (new Audio(sounds[sound])).load();
+    }
+}
+
 const generateRandomHeight = () => {
     let res;
     do {
@@ -12,18 +26,13 @@ const generateRandomHeight = () => {
     return res
 }
 
+preloadSounds();
 export const useGameState = defineStore('game-state', {
     state: () => {
         return {
             global: {
                 boardHeight: innerHeight * 0.75,
-                initialized: false,
-                sounds: {
-                    shoot: new Audio(shoot),
-                    nextLvl: new Audio(nextLvl),
-                    gameOver: new Audio(gameOver),
-                    nextLvlBonus: new Audio(nextLvlBonus),
-                }
+                initialized: false
             },
             levelProps: {
                 index: 1,
@@ -81,6 +90,9 @@ export const useGameState = defineStore('game-state', {
             this.gun.power = 0;
             this.gun.state = 'shoot';
             setTimeout(() => this.gun.state = 'off', 50);
+        },
+        playSound(key) {
+            (new Audio(sounds[key])).play();
         },
         reset() {
             this.$reset();

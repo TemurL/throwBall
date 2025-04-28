@@ -27,11 +27,11 @@ const gunMousedown = () => {
     startTime = loadingData.startTime;
 }
 const gunMouseup = () => {
-    gameState.global.sounds.shoot.play();
+    gameState.playSound('shoot');
     gameState.shoot(startTime, interval);
     checkLevelPassed();
     if (gameState.player.lives < 1) {
-        gameState.global.sounds.gameOver.play();
+        gameState.playSound('gameOver');
         if (gameState.player.heighScore && gameState.player.heighScore > gameState.levelProps.index) return
         gameState.player.heighScore = gameState.levelProps.index;
         localStorage.setItem('throwBallHieghtScore', gameState.levelProps.index);
@@ -52,7 +52,7 @@ const nextLvlClick = () => {
 
     if (gameState.player.scoredInARow >= 3) {
         gameState.player.lives += 1
-        gameState.global.sounds.nextLvlBonus.play();
+        gameState.playSound('nextLvlBonus');
         document.querySelector('.lives__extra-live').animate([
             { opacity: '1', translate: '0 0', offset: 0.3 },
             { opacity: '1', translate: '0 0', offset: 0.6 },
@@ -62,7 +62,7 @@ const nextLvlClick = () => {
             easing: 'ease-out'
         });
     } else {
-        gameState.global.sounds.nextLvl.play();
+        gameState.playSound('nextLvl');
     }
     
     setTimeout(gameState.nextLevel, 490);
