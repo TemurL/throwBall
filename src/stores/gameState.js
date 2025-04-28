@@ -91,6 +91,11 @@ export const useGameState = defineStore('game-state', {
             this.gun.state = 'shoot';
             setTimeout(() => this.gun.state = 'off', 50);
         },
+        dropShot(interval) {
+            clearInterval(interval);
+            this.gun.power = 0;
+            setTimeout(() => this.gun.state = 'off', 50);
+        },
         playSound(key) {
             (new Audio(sounds[key])).play();
         },

@@ -27,6 +27,10 @@ const gunMousedown = () => {
     startTime = loadingData.startTime;
 }
 const gunMouseup = () => {
+    if (gameState.gun.power < 10) {
+        gameState.dropShot(interval);
+        return
+    }
     gameState.playSound('shoot');
     gameState.shoot(startTime, interval);
     checkLevelPassed();
