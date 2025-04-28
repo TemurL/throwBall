@@ -3,12 +3,14 @@ import shoot from'@/assets/shoot.mp3';
 import nextLvl from'@/assets/passedLvl.mp3';
 import gameOver from'@/assets/gameOver.mp3';
 import nextLvlBonus from'@/assets/nextLvlBonus.mp3';
+import newHeighScore from'@/assets/newHeighScore.mp3';
 
 const sounds = {
     shoot,
     nextLvl,
     gameOver,
-    nextLvlBonus
+    nextLvlBonus,
+    newHeighScore
 }
 
 const preloadSounds = () => {

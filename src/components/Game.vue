@@ -35,8 +35,11 @@ const gunMouseup = () => {
     gameState.shoot(startTime, interval);
     checkLevelPassed();
     if (gameState.player.lives < 1) {
-        gameState.playSound('gameOver');
-        if (gameState.player.heighScore && gameState.player.heighScore > gameState.levelProps.index) return
+        if (gameState.player.heighScore && gameState.player.heighScore >= gameState.levelProps.index) {
+            gameState.playSound('gameOver');
+            return
+        }
+        gameState.playSound('newHeighScore');
         gameState.player.heighScore = gameState.levelProps.index;
         localStorage.setItem('throwBallHieghtScore', gameState.levelProps.index);
     }
