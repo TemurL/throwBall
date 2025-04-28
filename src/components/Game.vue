@@ -166,6 +166,18 @@ if (!gameState.global.initialized) {
             <div class="gun__loading-bar" :style="`background-image: linear-gradient(to top, black 0% ${gameState.gun.power}%, transparent 0%);`"></div>
         </div>
         <button @click="gameState.reset" class="reset-btn button" tabindex="-1">Reset</button>
+        <div class="mute-controls" @click="gameState.toggeMute">
+            <svg v-if="gameState.global.muted" class="mute-controls__soundOn" width="168" height="168" viewBox="0 0 168 168" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M74 122.5H47.5V50.5H74M74 122.5V50.5M74 122.5L104 152.5V90V20.5L74 50.5" stroke="black" stroke-width="11" stroke-linejoin="bevel"/>
+                <line x1="13.1109" y1="145.111" x2="146.111" y2="12.1109" stroke="black" stroke-width="11"/>
+            </svg>
+            <svg v-else class="mute-controls__soundOff" width="168" height="168" viewBox="0 0 168 168" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M59.5 120H33V48H59.5M59.5 120V48M59.5 120L89.5 150V87.5V18L59.5 48" stroke="black" stroke-width="11" stroke-linejoin="bevel"/>
+                <line x1="110" y1="83.5" x2="135.46" y2="83.5" stroke="black" stroke-width="11"/>
+                <line x1="106.111" y1="50.1109" x2="124.111" y2="32.1109" stroke="black" stroke-width="11"/>
+                <line x1="105.889" y1="116.111" x2="123.889" y2="134.111" stroke="black" stroke-width="11"/>
+            </svg>
+        </div>
         <button v-if="gameState.levelProps.levelPassed" @click="nextLvlClick" class="next-level-btn button" tabindex="-1" >Next</button>
 
         <div v-if="gameState.player.lives < 1" class="game-over">
@@ -299,6 +311,18 @@ if (!gameState.global.initialized) {
         right: 0;
         top: 0;
     }
+
+    .mute-controls {
+        position: absolute;
+        top: 2rem;
+        right: 0;
+
+        svg {
+            width: 35px;
+            height: 35px;
+        }
+    }
+
     .next-level-btn {
         position: absolute;
         top: 30%;

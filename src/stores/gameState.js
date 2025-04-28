@@ -33,7 +33,8 @@ export const useGameState = defineStore('game-state', {
         return {
             global: {
                 boardHeight: innerHeight * 0.75,
-                initialized: false
+                initialized: false,
+                muted: false
             },
             levelProps: {
                 index: 1,
@@ -98,7 +99,11 @@ export const useGameState = defineStore('game-state', {
             setTimeout(() => this.gun.state = 'off', 50);
         },
         playSound(key) {
+            if (this.global.muted) return
             (new Audio(sounds[key])).play();
+        },
+        toggeMute() {
+            this.global.muted = !this.global.muted
         },
         reset() {
             this.$reset();
