@@ -1,7 +1,7 @@
 <script setup>
 import { RouterView } from 'vue-router';
 import Header from './components/Header.vue';
-import { Analytics } from '@vercel/analytics/next';
+import { Analytics } from '@vercel/analytics';
 
 </script>
 
