@@ -6,16 +6,16 @@ import nextLvlBonus from'@/assets/nextLvlBonus.mp3';
 import newHeighScore from'@/assets/newHeighScore.mp3';
 
 const sounds = {
-    shoot,
-    nextLvl,
-    gameOver,
-    nextLvlBonus,
-    newHeighScore
+    shoot: new Audio(shoot),
+    nextLvl: new Audio(nextLvl),
+    gameOver: new Audio(gameOver),
+    nextLvlBonus: new Audio(nextLvlBonus),
+    newHeighScore: new Audio(newHeighScore)
 }
 
 const preloadSounds = () => {
     for (let sound in sounds) {
-        (new Audio(sounds[sound])).load();
+        sounds[sound].load();
     }
 }
 
@@ -100,7 +100,8 @@ export const useGameState = defineStore('game-state', {
         },
         playSound(key) {
             if (this.global.muted) return
-            (new Audio(sounds[key])).play();
+            sounds[key].currentTime = 0;
+            sounds[key].play();
         },
         toggeMute() {
             this.global.muted = !this.global.muted
