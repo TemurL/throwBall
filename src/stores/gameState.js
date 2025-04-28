@@ -34,7 +34,7 @@ export const useGameState = defineStore('game-state', {
             global: {
                 boardHeight: innerHeight * 0.75,
                 initialized: false,
-                muted: false
+                muted: JSON.parse(localStorage.getItem('throwBallIsMuted')) ?? false
             },
             levelProps: {
                 index: 1,
@@ -103,8 +103,12 @@ export const useGameState = defineStore('game-state', {
             sounds[key].currentTime = 0;
             sounds[key].play();
         },
+        async saveMute() {
+            localStorage.setItem('throwBallIsMuted', this.global.muted);
+        },
         toggeMute() {
-            this.global.muted = !this.global.muted
+            this.global.muted = !this.global.muted;
+            this.saveMute();
         },
         reset() {
             const mute = this.global.muted;
