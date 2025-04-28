@@ -15,7 +15,6 @@ const sounds = {
 
 const preloadSounds = () => {
     for (let sound in sounds) {
-        console.log(sounds, sound);
         (new Audio(sounds[sound])).load();
     }
 }
