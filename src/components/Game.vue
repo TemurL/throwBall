@@ -10,7 +10,7 @@ const checkLevelPassed = () => {
     prevPassed = passed ?? true
     const heightTargetPX = gameState.global.boardHeight * gameState.levelProps.targetHeight/100;
     const heightBallPX = gameState.global.boardHeight * gameState.ball.position.y/100;
-    const allowedDiff = gameState.ball.size/2 + gameState.levelProps.passZoneHeight/2;
+    const allowedDiff = gameState.ball.size/2 + gameState.levelProps.passZoneHeight/2 + 1;
     if (allowedDiff * -1 <= heightBallPX - heightTargetPX && heightBallPX - heightTargetPX <= allowedDiff) {
         passed = true;
         gameState.player.lives += 1
