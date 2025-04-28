@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
-import shoot from'@public/shoot.mp3';
-import nextLvl from'@public/passedLvl.mp3';
-import gameOver from'@public/gameOver.mp3';
-import nextLvlBonus from'@public/nextLvlBonus.mp3';
+import shoot from'@/assets/shoot.mp3';
+import nextLvl from'@/assets/passedLvl.mp3';
+import gameOver from'@/assets/gameOver.mp3';
+import nextLvlBonus from'@/assets/nextLvlBonus.mp3';
 
 const generateRandomHeight = () => {
     let res;
