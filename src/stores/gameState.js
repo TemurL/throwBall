@@ -22,7 +22,7 @@ const generateRandomHeight = () => {
     let res;
     do {
         res = Math.floor(Math.random() * 100)
-    } while (res < 50) 
+    } while (res < 35) 
     return res
 }
 

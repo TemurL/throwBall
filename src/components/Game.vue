@@ -27,7 +27,7 @@ const gunMousedown = () => {
     startTime = loadingData.startTime;
 }
 const gunMouseup = () => {
-    if (gameState.gun.power < 10) {
+    if (gameState.gun.power < 15) {
         gameState.dropShot(interval);
         return
     }
@@ -86,6 +86,9 @@ const init = () => {
             gunMousedown();
         }
         if (e.code == 'Enter' && gameState.levelProps.levelPassed) gameState.nextLevel();
+    })
+    document.addEventListener('keydown', (e) => {
+        if (e.code == 'Escape') gameState.dropShot(interval);
     })
     document.addEventListener('keyup', (e) => {
         if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
