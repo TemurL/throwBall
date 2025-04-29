@@ -228,6 +228,9 @@ if (!gameState.global.initialized) {
         &:nth-child(5n + 1) {
             width: 150px;
         }
+        &:nth-last-child(-n + 4) {
+            visibility: hidden;
+        }
     }
 
     #gun {
