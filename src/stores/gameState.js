@@ -145,7 +145,7 @@ export const useGameState = defineStore('game-state', {
         gameOver() {
             if (!this.player.heighScore || this.player.heighScore == this.levelProps.index) {
                 this.playSound('newHeighScore');
-                jsConfetti.addConfetti({
+                if (this.global.colored) jsConfetti.addConfetti({
                     confettiColors: [
                         '#00131E', '#CA6134', '#549AC3', '#CD4747', '#DEF3FF'
                     ],
