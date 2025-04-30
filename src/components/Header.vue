@@ -14,7 +14,7 @@ const clearPaths = computed(() => {
     <div class="wrapper">
       <RouterLink to="/" class="logo-title">Throw ball</RouterLink>
       <nav>
-        <RouterLink v-for="path in clearPaths" :to="path.path">{{ path.name }}</RouterLink>
+        <RouterLink v-for="path in clearPaths" :to="path.path" :key="path.index">{{ path.name }}</RouterLink>
       </nav>
     </div>
   </header>
