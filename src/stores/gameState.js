@@ -35,7 +35,7 @@ export const useGameState = defineStore('game-state', {
                 boardHeight: innerHeight * 0.75,
                 initialized: false,
                 muted: JSON.parse(localStorage.getItem('throwBall'))?.muted ?? false,
-                colored: JSON.parse(localStorage.getItem('throwBall'))?.colored ?? false
+                colored: JSON.parse(localStorage.getItem('throwBall'))?.colored ?? true
             },
             levelProps: {
                 index: 1,
