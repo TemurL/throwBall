@@ -4,6 +4,9 @@ import nextLvl from'@/assets/passedLvl.mp3';
 import gameOver from'@/assets/gameOver.mp3';
 import nextLvlBonus from'@/assets/nextLvlBonus.mp3';
 import newHeighScore from'@/assets/newHeighScore.mp3';
+import JSConfetti from 'js-confetti'
+
+const jsConfetti = new JSConfetti()
 
 const sounds = {
     shoot: new Audio(shoot),
@@ -140,7 +143,17 @@ export const useGameState = defineStore('game-state', {
             this.levelProps.prevLevelPassed = this.levelProps.levelPassed;
         },
         gameOver() {
-            if (!this.player.heighScore || this.player.heighScore == this.levelProps.index) return this.playSound('newHeighScore');
+            if (!this.player.heighScore || this.player.heighScore == this.levelProps.index) {
+                this.playSound('newHeighScore');
+                jsConfetti.addConfetti({
+                    confettiColors: [
+                        '#00131E', '#CA6134', '#549AC3', '#CD4747', '#DEF3FF'
+                    ],
+                    confettiNumber: 1500,
+                    confettiRadius: 3
+                })
+                return
+            };
             this.playSound('gameOver');
         },
         reset() {
