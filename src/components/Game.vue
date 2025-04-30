@@ -6,10 +6,12 @@ const gameState = useGameState();
 let interval;
 let SpacePressed = false;
 
-const gunMousedown = () => {
+const gunMousedown = (e) => {
+    if (e.type == 'touchstart') SpacePressed = true
     interval = gameState.loadingGun();
 }
-const gunMouseup = () => {
+const gunMouseup = (e) => {
+    if (e.type == 'touchend') SpacePressed = false
     if (gameState.gun.power < 15) {
         gameState.dropShot(interval);
         return
@@ -64,7 +66,7 @@ const init = () => {
             if (SpacePressed) return
             SpacePressed = true;
             document.querySelector('.reset-btn').blur();
-            gunMousedown();
+            gunMousedown(e);
         }
     })
     document.addEventListener('keydown', (e) => {
@@ -74,7 +76,7 @@ const init = () => {
         if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
             e.preventDefault();
             SpacePressed = false;
-            gunMouseup();
+            gunMouseup(e);
         }
     })
 }
@@ -126,7 +128,7 @@ if (!gameState.global.initialized) {
         </div>
         <div id="target-height" :style="`--height: ${gameState.levelProps.passZoneHeight}px;bottom: calc(${gameState.levelProps.targetHeight}% - var(--height)/2);`"></div>
         <div id="ball" :style="`--y:${gameState.ball.position.y}%;--size:${gameState.ball.size}px;`"></div>
-        <div id="gun" :style="`pointer-events: ${gameState.player.lives < 1 || gameState.levelProps.levelPassed ? 'none' : 'all'};`" :data-state="gameState.gun.state">
+        <div id="gun" @touchstart.passive="gunMousedown" @touchend="gunMouseup" :style="`pointer-events: ${gameState.player.lives < 1 || gameState.levelProps.levelPassed ? 'none' : 'all'};`" :data-state="gameState.gun.state">
             <svg v-if="gameState.gun.state == 'off'" width="49" height="51" viewBox="0 0 49 51" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11.6916 2.97794C12.1555 1.22269 13.7433 0 15.5588 0H33.0982C34.9038 0 36.4855 1.20965 36.9585 2.9522L48.6299 45.9522C49.3203 48.4957 47.405 51 44.7696 51H4.19449C1.57004 51 -0.343319 48.5153 0.327263 45.9779L11.6916 2.97794Z" fill="black"/>
             </svg>
