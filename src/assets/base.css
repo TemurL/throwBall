@@ -2,9 +2,12 @@ html {
   box-sizing: border-box;
 }
 
+html * {
+  user-select: none;
+}
+
 body {
   margin: 0;
-  padding: 1.5rem;
   overflow: hidden;
 }
 

@@ -19,8 +19,15 @@ html {
 body {
   min-height: 90dvh;
   font-size: 34px;
+  /* padding: 1.5rem; */
 }
 
 .page-title {
   text-align: center;
+}
+
+@media screen and (max-width: 999px) {
+  body {
+    /* padding: 10px; */
+  }
 }

@@ -1,16 +1,28 @@
 <script setup>
 import { RouterLink } from 'vue-router';
 import router from '../router';
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUpdated } from 'vue';
+import { useVars } from '@/stores/vars';
+
+const vars = useVars();
+const headerElem = ref();
 
 const clearPaths = computed(() => {
     return router.getRoutes().filter(p => p.path != router.currentRoute.value.path && p.path != '/');
 })
 
+onUpdated(() => {
+  const setHeaderHeight = () => {
+    vars.headerHeight = headerElem.value.clientHeight;
+  };
+  setHeaderHeight();
+  addEventListener('resize', setHeaderHeight);
+})
+
 </script>
 
 <template>
-  <header v-if="router.currentRoute.value.path != '/'">
+  <header ref="headerElem" v-if="router.currentRoute.value.path != '/'">
     <div class="wrapper">
       <RouterLink to="/" class="logo-title">Throw ball</RouterLink>
       <nav>
@@ -24,6 +36,7 @@ const clearPaths = computed(() => {
     .wrapper {
         display: flex;
         gap: 10px;
+        padding: 1.5rem;
         align-items: center;
         justify-content: space-between;
 
@@ -46,5 +59,11 @@ const clearPaths = computed(() => {
                 letter-spacing: 1.1px;
             }
         }
+    }
+
+    @media screen and (max-width: 999px) {
+      .wrapper {
+        padding: 15px;
+      }
     }
 </style>

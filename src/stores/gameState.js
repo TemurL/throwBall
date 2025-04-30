@@ -1,9 +1,13 @@
+import { useVars } from "./vars";
 import { defineStore } from "pinia";
 import shoot from'@/assets/shoot.mp3';
 import nextLvl from'@/assets/passedLvl.mp3';
 import gameOver from'@/assets/gameOver.mp3';
 import nextLvlBonus from'@/assets/nextLvlBonus.mp3';
 import newHeighScore from'@/assets/newHeighScore.mp3';
+import { computed } from "vue";
+
+const vars = useVars();
 
 const sounds = {
     shoot: new Audio(shoot),
@@ -32,7 +36,7 @@ export const useGameState = defineStore('game-state', {
     state: () => {
         return {
             global: {
-                boardHeight: innerHeight * 0.75,
+                boardHeight: innerWidth <= 999 ? computed(() => vars.mobileGameboardHeight) : innerHeight * 0.75,
                 initialized: false,
                 muted: JSON.parse(localStorage.getItem('throwBall'))?.muted ?? false,
                 colored: JSON.parse(localStorage.getItem('throwBall'))?.colored ?? true
