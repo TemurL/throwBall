@@ -34,7 +34,8 @@ export const useGameState = defineStore('game-state', {
             global: {
                 boardHeight: innerHeight * 0.75,
                 initialized: false,
-                muted: JSON.parse(localStorage.getItem('throwBallIsMuted')) ?? false
+                muted: JSON.parse(localStorage.getItem('throwBall'))?.muted ?? false,
+                colored: JSON.parse(localStorage.getItem('throwBall'))?.colored ?? false
             },
             levelProps: {
                 index: 1,
@@ -42,11 +43,12 @@ export const useGameState = defineStore('game-state', {
                 timeToPowerUp: 1,
                 passZoneHeight: 50,
                 levelPassed: false,
+                prevLevelPassed: false
             },
             player: {
                 name: "Player 1",
                 lives: 10,
-                heighScore: localStorage.getItem('throwBallHieghtScore') ? localStorage.getItem('throwBallHieghtScore') : null,
+                heighScore: JSON.parse(localStorage.getItem('throwBall'))?.heighScore ?? null,
                 scoredInARow: 0,
             },
             ball: {
@@ -70,10 +72,12 @@ export const useGameState = defineStore('game-state', {
             this.levelProps.timeToPowerUp *= 0.95;
             this.levelProps.passZoneHeight *= 0.98;
             this.levelProps.levelPassed = false;
+            if (!this.player.heighScore || this.player.heighScore <= this.levelProps.index) {
+                this.setHeighScore(this.levelProps.index);
+            }
         },
         loadingGun() {
             this.ball.position.y = 0;
-            const startTime = Date.now();
 
             this.gun.state = 'loading';
 
@@ -82,12 +86,11 @@ export const useGameState = defineStore('game-state', {
                 this.gun.power += 1;
             }, this.levelProps.timeToPowerUp * 10);
 
-            return {startTime, interval};
+            return interval;
         },
-        shoot(startTime, interval) {
+        shoot(interval) {
+            this.playSound('shoot');
             clearInterval(interval);
-            const finTime = Date.now();
-            const timeDif = (finTime - startTime) / 1000;
             this.ball.position.y = this.gun.power;
             this.gun.power = 0;
             this.gun.state = 'shoot';
@@ -103,18 +106,50 @@ export const useGameState = defineStore('game-state', {
             sounds[key].currentTime = 0;
             sounds[key].play();
         },
-        async saveMute() {
-            localStorage.setItem('throwBallIsMuted', this.global.muted);
-        },
-        toggeMute() {
+        toggleMute() {
             this.global.muted = !this.global.muted;
-            this.saveMute();
+            this.saveCache();
+        },
+        toggleColor() {
+            this.global.colored = !this.global.colored;
+            this.saveCache();
+        },
+        setHeighScore(newHeighScore) {
+            this.player.heighScore = newHeighScore
+            this.saveCache();
+        },
+        async saveCache() {
+            const cache = {
+                heighScore: this.player.heighScore,
+                colored: this.global.colored,
+                muted: this.global.muted
+            };
+            localStorage.setItem('throwBall', JSON.stringify(cache));
+        },
+        checkLevelPassed() {
+            const heightTargetPX = this.global.boardHeight * this.levelProps.targetHeight/100;
+            const heightBallPX = this.global.boardHeight * this.ball.position.y/100;
+            const allowedDiff = this.ball.size/2 + this.levelProps.passZoneHeight/2 + 1;
+            if (allowedDiff * -1 <= heightBallPX - heightTargetPX && heightBallPX - heightTargetPX <= allowedDiff) {
+                this.levelProps.levelPassed = true;
+                this.player.lives += 1
+            } else {
+                this.levelProps.levelPassed = false
+                this.player.lives -= 1
+            }
+            this.levelProps.prevLevelPassed = this.levelProps.levelPassed;
+        },
+        gameOver() {
+            if (!this.player.heighScore || this.player.heighScore == this.levelProps.index) return this.playSound('newHeighScore');
+            this.playSound('gameOver');
         },
         reset() {
             const mute = this.global.muted;
+            const color = this.global.colored;
             this.$reset();
             this.global.initialized = true;
             this.global.muted = mute;
+            this.global.colored = color;
         }
     }
 })

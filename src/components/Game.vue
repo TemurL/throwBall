@@ -3,58 +3,36 @@ import { useGameState } from '@/stores/gameState.js';
 
 const gameState = useGameState();
 
-let interval, startTime, passed, prevPassed;
-let pressed = false;
-
-const checkLevelPassed = () => {
-    prevPassed = passed ?? true
-    const heightTargetPX = gameState.global.boardHeight * gameState.levelProps.targetHeight/100;
-    const heightBallPX = gameState.global.boardHeight * gameState.ball.position.y/100;
-    const allowedDiff = gameState.ball.size/2 + gameState.levelProps.passZoneHeight/2 + 1;
-    if (allowedDiff * -1 <= heightBallPX - heightTargetPX && heightBallPX - heightTargetPX <= allowedDiff) {
-        passed = true;
-        gameState.player.lives += 1
-    } else {
-        passed = false
-        gameState.player.lives -= 1
-    }
-    gameState.levelProps.levelPassed = passed;
-}
+let interval;
+let SpacePressed = false;
 
 const gunMousedown = () => {
-    const loadingData = gameState.loadingGun();
-    interval = loadingData.interval;
-    startTime = loadingData.startTime;
+    interval = gameState.loadingGun();
 }
 const gunMouseup = () => {
     if (gameState.gun.power < 15) {
         gameState.dropShot(interval);
         return
     }
-    gameState.playSound('shoot');
-    gameState.shoot(startTime, interval);
-    checkLevelPassed();
+
+    gameState.shoot(interval);
+
+    gameState.checkLevelPassed();
+
     if (gameState.player.lives < 1) {
-        if (gameState.player.heighScore && gameState.player.heighScore >= gameState.levelProps.index) {
-            gameState.playSound('gameOver');
-            return
-        }
-        gameState.playSound('newHeighScore');
-        gameState.player.heighScore = gameState.levelProps.index;
-        localStorage.setItem('throwBallHieghtScore', gameState.levelProps.index);
+        gameState.gameOver();
     }
 
     if (gameState.levelProps.levelPassed) {
-        setTimeout(nextLvlClick, 500);
-    }
-
-    if ( (prevPassed && passed) || (passed && gameState.player.scoredInARow == 0) ) {
-        gameState.player.scoredInARow++
+        if (gameState.levelProps.prevLevelPassed || gameState.player.scoredInARow == 0) {
+            gameState.player.scoredInARow++
+        }
+        setTimeout(nextLvl, 500);
     } else {
         gameState.player.scoredInARow = 0;
     }
 }
-const nextLvlClick = () => {
+const nextLvl = () => {
     document.querySelector('.next-level-btn').classList.add('fadeout');
 
     if (gameState.player.scoredInARow >= 3) {
@@ -83,12 +61,11 @@ const init = () => {
     document.addEventListener('keydown', (e) => {
         if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
             e.preventDefault();
-            if (pressed) return
-            pressed = true;
+            if (SpacePressed) return
+            SpacePressed = true;
             document.querySelector('.reset-btn').blur();
             gunMousedown();
         }
-        if (e.code == 'Enter' && gameState.levelProps.levelPassed) gameState.nextLevel();
     })
     document.addEventListener('keydown', (e) => {
         if (e.code == 'Escape') gameState.dropShot(interval);
@@ -96,7 +73,7 @@ const init = () => {
     document.addEventListener('keyup', (e) => {
         if (e.code == 'Space' && gameState.player.lives >= 1 && !gameState.levelProps.levelPassed) {
             e.preventDefault();
-            pressed = false;
+            SpacePressed = false;
             gunMouseup();
         }
     })
@@ -111,7 +88,7 @@ if (!gameState.global.initialized) {
 
 <template>
 
-    <div id="throwBall" :style="`height:${gameState.global.boardHeight}px; user-select: none;`" tabindex="-1">
+    <div id="throwBall" :class="gameState.global.colored ? 'colored' : ''" :style="`height:${gameState.global.boardHeight}px; user-select: none;`" tabindex="-1">
         <span v-if="gameState.player.heighScore" class="heigh-score">Heigh Score: {{ gameState.player.heighScore }}</span> <br v-if="gameState.player.heighScore">
         <span>Level: {{ gameState.levelProps.index }}</span>
         <div class="lives">
@@ -149,7 +126,7 @@ if (!gameState.global.initialized) {
         </div>
         <div id="target-height" :style="`--height: ${gameState.levelProps.passZoneHeight}px;bottom: calc(${gameState.levelProps.targetHeight}% - var(--height)/2);`"></div>
         <div id="ball" :style="`--y:${gameState.ball.position.y}%;--size:${gameState.ball.size}px;`"></div>
-        <div id="gun" @mousedown="gunMousedown" @mouseup="gunMouseup" @touchstart.passive="gunMousedown" @touchend="gunMouseup" :style="`pointer-events: ${gameState.player.lives < 1 || gameState.levelProps.levelPassed ? 'none' : 'all'};`" :data-state="gameState.gun.state">
+        <div id="gun" :style="`pointer-events: ${gameState.player.lives < 1 || gameState.levelProps.levelPassed ? 'none' : 'all'};`" :data-state="gameState.gun.state">
             <svg v-if="gameState.gun.state == 'off'" width="49" height="51" viewBox="0 0 49 51" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11.6916 2.97794C12.1555 1.22269 13.7433 0 15.5588 0H33.0982C34.9038 0 36.4855 1.20965 36.9585 2.9522L48.6299 45.9522C49.3203 48.4957 47.405 51 44.7696 51H4.19449C1.57004 51 -0.343319 48.5153 0.327263 45.9779L11.6916 2.97794Z" fill="black"/>
             </svg>
@@ -163,10 +140,10 @@ if (!gameState.global.initialized) {
             <svg v-if="gameState.gun.state == 'shoot'" width="49" height="60" viewBox="0 0 49 60" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11.777 3.12327C12.1872 1.29743 13.8084 0 15.6797 0H32.975C34.8377 0 36.4538 1.28574 36.8726 3.10077L48.8697 55.1008C49.4479 57.6072 47.5443 60 44.9721 60H3.99826C1.43548 60 -0.466187 57.6237 0.0955259 55.1233L11.777 3.12327Z" fill="black" />
             </svg>
-            <div class="gun__loading-bar" :style="`background-image: linear-gradient(to top, black 0% ${gameState.gun.power}%, transparent 0%);`"></div>
+            <div class="gun__loading-bar" :style="`background-image: linear-gradient(to top, ${gameState.global.colored ? '#A84E28' : 'black'} 0% ${gameState.gun.power - 2}%, black ${gameState.gun.power - 2}% ${gameState.gun.power}%, transparent 0%);`"></div>
         </div>
         <button @click="gameState.reset" class="reset-btn button" tabindex="-1">Reset</button>
-        <div class="mute-controls" @click="gameState.toggeMute">
+        <div class="mute-controls" @click="gameState.toggleMute">
             <svg v-if="gameState.global.muted" class="mute-controls__soundOn" width="168" height="168" viewBox="0 0 168 168" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M74 122.5H47.5V50.5H74M74 122.5V50.5M74 122.5L104 152.5V90V20.5L74 50.5" stroke="black" stroke-width="11" stroke-linejoin="bevel"/>
                 <line x1="13.1109" y1="145.111" x2="146.111" y2="12.1109" stroke="black" stroke-width="11"/>
@@ -178,7 +155,7 @@ if (!gameState.global.initialized) {
                 <line x1="105.889" y1="116.111" x2="123.889" y2="134.111" stroke="black" stroke-width="11"/>
             </svg>
         </div>
-        <button v-if="gameState.levelProps.levelPassed" @click="nextLvlClick" class="next-level-btn button" tabindex="-1" >Next</button>
+        <button v-if="gameState.levelProps.levelPassed" class="next-level-btn button" tabindex="-1" >Next</button>
 
         <div v-if="gameState.player.lives < 1" class="game-over">
             <p>GAME OVER</p>
@@ -259,8 +236,8 @@ if (!gameState.global.initialized) {
             position: absolute;
             inset: 0 auto 0 auto;
             width: 10px;
-            border: 2px solid black;
-            right: -20px;
+            border: 3px solid black;
+            right: -25px;
             border-radius: 4px;
             background-image: linear-gradient(to top, black 0% 0%, transparent 10%);
         }
@@ -362,6 +339,43 @@ if (!gameState.global.initialized) {
 
         p {
             margin: 0;
+        }
+    }
+
+    #throwBall.colored {
+        background: var(--color-accent-blue);
+
+        #ball {
+            box-sizing: border-box;
+            border: 2px solid black;
+            background: #A84E28;
+        }
+
+        #gun {
+            path {
+                fill: #0d3654;
+                stroke: none;
+            }
+
+            .gun__loading-bar {
+                border-color: var(--color-dark);
+            }
+        }
+
+        #target-height {
+            background: #1c364682;
+        }
+
+        .next-level-btn,
+        .game-over {
+            background: var(--color-dark);
+            color: var(--color-light);
+            letter-spacing: 0.03em;
+        }
+
+        svg path {
+            fill: var(--color-accent-orange);
+            stroke: black;
         }
     }
 
